@@ -1,44 +1,135 @@
-# RandomThemes
-
-![Build](https://github.com/Violet-VE/RandomThemes/workflows/Build/badge.svg)
-[![Version](https://img.shields.io/jetbrains/plugin/v/PLUGIN_ID.svg)](https://plugins.jetbrains.com/plugin/PLUGIN_ID)
-[![Downloads](https://img.shields.io/jetbrains/plugin/d/PLUGIN_ID.svg)](https://plugins.jetbrains.com/plugin/PLUGIN_ID)
-
-## Template ToDo list
-- [x] Create a new [IntelliJ Platform Plugin Template][template] project.
-- [ ] Get familiar with the [template documentation][template].
-- [ ] Adjust the [pluginGroup](./gradle.properties), [plugin ID](./src/main/resources/META-INF/plugin.xml) and [sources package](./src/main/kotlin).
-- [ ] Adjust the plugin description in `README` (see [Tips][docs:plugin-description])
-- [ ] Review the [Legal Agreements](https://plugins.jetbrains.com/docs/marketplace/legal-agreements.html?from=IJPluginTemplate).
-- [ ] [Publish a plugin manually](https://plugins.jetbrains.com/docs/intellij/publishing-plugin.html?from=IJPluginTemplate) for the first time.
-- [ ] Set the `PLUGIN_ID` in the above README badges.
-- [ ] Set the [Plugin Signing](https://plugins.jetbrains.com/docs/intellij/plugin-signing.html?from=IJPluginTemplate) related [secrets](https://github.com/JetBrains/intellij-platform-plugin-template#environment-variables).
-- [ ] Set the [Deployment Token](https://plugins.jetbrains.com/docs/marketplace/plugin-upload.html?from=IJPluginTemplate).
-- [ ] Click the <kbd>Watch</kbd> button on the top of the [IntelliJ Platform Plugin Template][template] to be notified about releases containing new features and fixes.
+# Theme Randomizer
 
 <!-- Plugin description -->
-This Fancy IntelliJ Platform Plugin is going to be your implementation of the brilliant ideas that you have.
+Do you have many themes installed? Do you have many favorite themes? Would you like to be able randomly set your theme?
 
-This specific section is a source for the [plugin.xml](/src/main/resources/META-INF/plugin.xml) file which will be extracted by the [Gradle](/build.gradle.kts) during the build process.
-
-To keep everything working, do not remove `<!-- ... -->` sections. 
+Well look no further! The Theme Randomizer is exactly that. It can pick a random theme or cycle to the next theme in
+line. You can also customize the interval when your theme changes as well!
 <!-- Plugin description end -->
 
 ## Installation
 
-- Using the IDE built-in plugin system:
-  
-  <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>Marketplace</kbd> > <kbd>Search for "RandomThemes"</kbd> >
-  <kbd>Install</kbd>
-  
+- Using IDE built-in plugin system:
+
+  <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>Marketplace</kbd> > <kbd>Search for "Theme
+  Randomizer"</kbd> >
+  <kbd>Install Plugin</kbd>
+
 - Manually:
 
-  Download the [latest release](https://github.com/Violet-VE/RandomThemes/releases/latest) and install it manually using
+  Download the [latest release](https://github.com/Unthrottled/theme-randomizer/releases/latest) and install it manually
+  using
   <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>⚙️</kbd> > <kbd>Install plugin from disk...</kbd>
 
+## Configuration
+
+<kbd>Settings/Preferences</kbd> > <kbd>Appearance & Behavior</kbd> > <kbd>Theme Randomizer</kbd>
+
+### General Settings
+
+This section is dedicated to describing the general configurable functionality tab.
+
+#### Settings
+
+**Plugin Mode**
+
+- **Timed**: Configures the plugin to randomly choose a theme to be used in a fixed time interval.
+- **Match OS**: Configures the plugin to randomly choose at theme when the plugin observes your system changes from
+  light to dark or dark to light.
+
+**Change Theme**
+
+If enabled this allows the randomizer plugin to change the theme at the specified interval.
+
+Note: if you set a theme manually, that will reset the countdown to changing the theme. Such as if you change a
+theme,and your interval is a day, then the next theme change will happen 24 hours after your manual theme change.
+
+__Switches Before Change__
+
+Allows you to specify how many times a theme will be associated with a system switch.
+
+For example, if you choose `0`, you will get a random theme everytime your system switches to a different mode.
+
+For clarity, if you choose `1`, and you have these themes:
+
+```
+Light Themes: Light A, Light B, Light C
+Dark Themes: Dark A, Dark B, Dark C
+```
+
+Here is a table as to how this would work:
+
+<details>
+  <summary>Theme Table</summary>
+
+| Day of Week | System Mode | Theme   |
+|-------------|-------------|---------|
+| Monday      | Dark AM     | Dark  C |
+| Monday      | Light       | Light B |
+| Monday      | Dark PM     | Dark  C |
+| Tuesday     | Light       | Light B |
+| Tuesday     | Dark        | Dark  A |
+| Wednesday   | Light       | Light C |
+| Wednesday   | Dark        | Dark  A |
+| Thursday    | Light       | Light C |
+| Thursday    | Dark        | Dark  B |
+| Friday      | Light       | Light A |
+| Friday      | Dark        | Dark  B |
+| Saturday    | Light       | Light A |
+
+**Note**: This is provided you are using your IDE any time before & after a system switch.
+EG, if you use your IDE monday morning and quit using it before Monday Night. Then you open your IDE up Thursday
+Morning, you'll still have the same theme.
+Themes only change when the plugin observes a system change.
+
+</details>
+
+**Match OS**
+
+When the plugin is `Timed` mode you have the option to randomly pick a theme that matches your OS's current setting.
+If left unchecked, the plugin will randomly choose a theme regardless of the OS's setting. So you could get a dark theme when your OS is light and vice versa.
+
+**Random Order**
+
+Well this puts the randomizer in `Theme Randomizer`. This will evenly and randomly distribute all themes, so you don't
+see the same theme too many times!
+
+If it is not set, then the plugin will run through the themes sequentially by name in ascending order.
+
+**Locally Auto-Sync Settings**
+Allows you to _only_ synchronize the list of preferred/blacklisted themes across IDEs.
+
+The first IDE that you enable Locally Auto-Sync Settings in the settings & save will set the initial list.
+Then when you go to another IDE & enable Locally Auto-Sync Settings, then the settings from the other IDE will overwrite the current settings (e.g. keeps it in sync with the first one).
+As long as there is a centralized setting, that will overwrite the IDE settings, when Locally Auto-Sync Settings. When you disable the action, it will go back to the IDE specific setting.
+
+**Theme Transition Animation**
+
+Toggles the built-in theme change fade animation.
+
+_The animations will remain in your IDE after uninstalling the plugin._
+
+To remove them, un-check this action or toggle the action at
+<kbd>Help</kbd> > <kbd>Find Action</kbd> > <kbd>ide.intellij.laf.enable.animation</kbd>
+
+#### Preferred Themes
+
+This is the complete list of all the installed themes on your ide.
+
+When **no themes** are preferred the randomizer will pick from all the themes. However, once one or many themes become
+preferred the randomizer will choose from the preferred list. This will happen the next time a theme change interval is
+emitted.
+
+#### Blacklisted Themes
+
+Is really handy if you are using a plugin whose author does not know how to stop adding themes. If you leave all the **
+preferred themes** unchecked, and just exclude specific themes in the black list. That way when new themes are added,
+you do not have to remember to add the new theme to your preferred list.
+
+**Note**: blacklist takes priority of preference. If you have a theme preferred and excluded, then the theme will not
+show up as a next chosen theme.
 
 ---
 Plugin based on the [IntelliJ Platform Plugin Template][template].
 
 [template]: https://github.com/JetBrains/intellij-platform-plugin-template
-[docs:plugin-description]: https://plugins.jetbrains.com/docs/intellij/plugin-user-experience.html#plugin-description-and-presentation
